@@ -4,3 +4,21 @@
 GitHub Actions practice repository.
 
 Basic concepts. Built following [GitHub's tutorial](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions).
+
+## Workflow YAML file
+
+The workflow is configured in a YAML file. The basic syntax is as follows:
+
+```yaml
+name: name-to-appear-in-repository-Actions-tab
+on: [push] # on creates a trigger to run the workflow. [push] means the action should run on every push to every branch
+jobs: # groups all jobs in this workflow
+  name-of-a-job-you-are-defining:
+    runs-on: ubuntu-latest # defines the runner for the job. In this case, ubuntu
+    steps: # groups all steps (actions or shell scripts) for the job
+      - uses: actions/checkout@v2 # calls the v2 of actions/checkout. Should be used whenever a workflow runs against repository code
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14' # installs node on the runner
+      - run: npm install -g bats # run a command in runner. In this case, install a dependency
+      - run: bats -v # checks the version of bats installed, to check if it was successfully installed.
