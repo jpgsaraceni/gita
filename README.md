@@ -5,6 +5,10 @@ GitHub Actions practice repository.
 
 Basic concepts. Built following [GitHub's tutorial](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions).
 
+## What's this?
+
+GitHub Actions is a CI/CD tool, that allows you to set up workflows to be run automagically, whenever a trigger you set goes off (like whenever you push to the repository). Its main use is to automate builds, tests and deployments of your app.
+
 ## Workflow YAML file
 
 The workflow is configured in a YAML file. The basic syntax is as follows:
