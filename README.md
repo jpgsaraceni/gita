@@ -5,9 +5,37 @@ GitHub Actions practice repository.
 
 Basic concepts. Built following [GitHub's tutorial](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions).
 
+## Index
+
+* [What are GitHub Actions](#whats-this)
+* [Key Terms](#key-terms)
+  * [Runner](#runner)
+  * [Workflow](#workflow)
+  * [Job](#job)
+  * [Actions](#actions)
+* [Workflow YAML File](#workflow-yaml-file)
+
 ## What's this?
 
 GitHub Actions is a CI/CD tool, that allows you to set up workflows to be run automagically, whenever a trigger you set goes off (like whenever you push to the repository). Its main use is to automate builds, tests and deployments of your app.
+
+## Key Terms
+
+### Runner
+
+A virtual machine that is used to run the *things* (jobs) defined in your workflow.
+
+### Workflow
+
+A workflow is the set of *things* (jobs) you want to happen when *other things* (triggers) happen.
+
+### Job
+
+Workflows define one or more jobs, which contain shell script or an *Action*. They are basically commands that will run in your runner.
+
+### Actions
+
+Predefined workflow, by you or by the community, for common, repetitive workflows.
 
 ## Workflow YAML file
 
