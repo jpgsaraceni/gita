@@ -1,4 +1,5 @@
 # Gita
+
 ![Gita](https://user-images.githubusercontent.com/80982137/155199653-32391000-56e1-4c2f-90a5-ff9afc9ec558.jpg)
 
 GitHub Actions practice repository.
@@ -14,6 +15,10 @@ Basic concepts. Built following [GitHub's tutorial](https://docs.github.com/en/a
   * [Job](#job)
   * [Actions](#actions)
 * [Workflow YAML File](#workflow-yaml-file)
+* [Customizing Workflows](#customizing-workflows)
+  * [Env Variables](#env-variables)
+  * [Scripts](#scripts)
+  * [Artifacts](#artifacts)
 
 ## What's this?
 
@@ -49,8 +54,64 @@ jobs: # groups all jobs in this workflow
     runs-on: ubuntu-latest # defines the runner for the job. In this case, ubuntu
     steps: # groups all steps (actions or shell scripts) for the job
       - uses: actions/checkout@v2 # calls the v2 of actions/checkout. Should be used whenever a workflow runs against repository code
-      - uses: actions/setup-node@v2
+      # the @{version} accepts a version tag, a version SHA or a branch name.
+      - uses: actions/setup-node@v2 # node setup community defined action.
+      - uses: ./.github/actions/directory-with-user-defined-actions # user defined action.
+      # note that ./ refers to the root of the repository.
+      - uses: docker://alpine3.8 # to get an Action defined on a Docker Hub image
         with:
           node-version: '14' # installs node on the runner
       - run: npm install -g bats # run a command in runner. In this case, install a dependency
       - run: bats -v # checks the version of bats installed, to check if it was successfully installed.
+```
+
+## Customizing Workflows
+
+### Env Variables
+
+You can add environment variables to your workflow by adding an `env` field in the `steps` of a job:
+
+```yaml
+jobs:
+  example-job:
+      steps:
+        - name: Connect to PostgreSQL
+          run: node client.js
+          env:
+            POSTGRES_HOST: postgres
+            POSTGRES_PORT: 5432
+```
+
+### Scripts
+
+Some scripts you can run directly (like the npm script in the example). To use shell scripts for example, add use the `run` keyword followed by the path to the script, and `shell` followed by the name of the shell you wish to run on:
+
+```yaml
+jobs:
+  example-job:
+    steps:
+      - name: Run build script
+        run: ./.github/scripts/build.sh
+        shell: bash
+```
+
+### Artifacts
+
+Artifacts are files created during builds or tests in a workflow, and are accessible by all jobs within a same workflow. Actions and workflows called inside a run have write access to its artifacts.
+
+The following example creates an artifact (output.log) using a shell command and accesses it from another action in the same job (upload-artifact):
+
+```yaml
+jobs:
+  example-job:
+    name: Save output
+    steps:
+      - shell: bash
+        run: |
+          expr 1 + 1 > output.log
+      - name: Upload output file
+        uses: actions/upload-artifact@v2
+        with:
+          name: output-log-file
+          path: output.log
+```
