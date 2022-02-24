@@ -19,6 +19,17 @@ Basic concepts. Built following [GitHub's tutorial](https://docs.github.com/en/a
   * [Env Variables](#env-variables)
   * [Scripts](#scripts)
   * [Artifacts](#artifacts)
+* [Expressions](#expressions)
+  * [Supported Data Types](#supported-data-types)
+  * [Supported Operators](#supported-operators)
+    * [GitHub Equality Comparisons](#github-equality-comparisons)
+  * [Functions](#functions)
+  * [Status Check Functions](#status-check-functions)
+    * [success()](#success)
+    * [always()](#always)
+    * [cancelled()](#cancelled)
+    * [failure()](#failure)
+  * [Object Filters](#object-filters)
 
 ## What's this?
 
@@ -115,3 +126,72 @@ jobs:
           name: output-log-file
           path: output.log
 ```
+
+## Expressions
+
+Expressions can be used to evaluate environment variables or access context. They are composed of literals, context references and functions.
+
+To tell GitHub some text is an expression and not a string, soround it with `${{ }}`. You can ommit this when using `if`.
+
+### Supported Data Types
+
+`bool`, `null`, `number` and `string` (also `object` and `array`). Examples:
+
+```yaml
+some-bool: ${{ true }}
+some-integer: ${{ 3 }}
+some-float: ${{ 1.1 }}
+some-string: hi i'm a string
+some-other-srting: ${{ 'another string' }} # double quote " won't work
+```
+
+### Supported Operators
+
+`() [] . ! < <= > >= == != && ||`
+
+more info [here](https://docs.github.com/en/actions/learn-github-actions/expressions#operators).
+
+#### Github equality comparisons
+
+* Dinamically typed (0 == "0");
+* Arrays and objects only equal if same instance;
+* NaN != NaN;
+* Case insensitive.
+
+### Functions
+
+GitHub has a series of built-in functions you can use to manipulate strings and arrays. For a comprehensive list, look [here](https://docs.github.com/en/actions/learn-github-actions/expressions#functions).
+
+### Status Check Functions
+
+These functions are used as arguments for an `if` conditional. You can also compare explicitly, e.g: `${{ job.status == 'success' }}`
+
+#### `success()`
+
+Returns `true` if all steps before succeeded.
+
+#### `always()`
+
+Causes the step to execute, even if preceded by a (non-critical) failure
+
+#### `cancelled()`
+
+Returns `true` if the workflow was cancelled.
+
+#### `failure()`
+
+If any previous step failed.
+
+### Object Filters
+
+Use `*` to get matching items from an object.
+
+```yaml
+[
+  { "name": "apple", "quantity": 1 },
+  { "name": "orange", "quantity": 2 },
+  { "name": "pear", "quantity": 1 }
+]
+```
+
+The filter `fruits.*.name` returns the array `[ "apple", "orange", "pear" ]`
