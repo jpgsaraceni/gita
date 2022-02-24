@@ -195,3 +195,22 @@ Use `*` to get matching items from an object.
 ```
 
 The filter `fruits.*.name` returns the array `[ "apple", "orange", "pear" ]`
+
+## Contexts
+
+Contexts are objects that store information about workflow runs, runner environment, jobs and steps. They are accessible through expression syntax. For more details, look [here](https://docs.github.com/en/actions/learn-github-actions/contexts).
+
+The following example uses the `github` context object to run a job is something is pushed to main:
+
+```yaml
+name: CI
+on: push
+jobs:
+  prod-check:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploying to production server on branch $GITHUB_REF"
+```
+
+The function `toJSON` allows to pretty-print JSON objects to the log. Check out [the example](https://github.com/jpgsaraceni/gita/.github/workflows/log-context.yml).
